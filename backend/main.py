@@ -1,19 +1,19 @@
+import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-import uvicorn
+from .database import create_db_and_tables
+from .routes.authRoutes import authRouter
+
 
 app = FastAPI()
 
-# Test API
-@app.get("/")
-async def say_hello():
-    return {"message" : "Hello World It's FastAPI"}
+@app.on_event("startup")
+def on_startup():
+    create_db_and_tables()
 
+app.include_router(authRouter)
 
-
-origins = [
-    "http://localhost:5173/"
-]
+origins = ["http://localhost:5173/"]
 
 app.add_middleware(
     CORSMiddleware,
