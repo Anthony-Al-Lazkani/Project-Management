@@ -13,7 +13,7 @@ def on_startup():
 
 app.include_router(authRouter, prefix="/auth")
 
-origins = ["http://localhost:5173/"]
+origins = ["http://localhost:5173"]
 
 app.add_middleware(
     CORSMiddleware,

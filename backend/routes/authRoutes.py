@@ -16,19 +16,29 @@ SessionDep = Annotated[Session, Depends(get_session)]
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 class signUpRequest(BaseModel):
-    username: str = Field(..., min_length=3, max_length=50)
+    username: str
     email: str
-    password: str = Field(..., min_length=8)
-    confirm_password: str = Field(..., min_length=8)
+    password: str
+    confirm_password: str
 
 class signInRequest(BaseModel):
-    username : str = Field(..., min_length=3, max_length=50)
-    password: str = Field(..., min_length=8)
+    username : str
+    password: str
 
 
-@authRouter.post("/register/")
+@authRouter.post("/register")
 async def sign_up(user: signUpRequest, session: SessionDep) -> JSONResponse:
     exisiting_username = session.exec(select(User).where(User.username == user.username)).first()
+
+    if len(user.username) < 3:
+        raise HTTPException(status_code=400, detail="Username should be at least 3 characters")
+    
+    if len(user.username) > 50:
+        raise HTTPException(status_code=400, detail="Username should be less than 50 characters")
+
+    if len(user.password) < 8:
+        raise HTTPException(status_code=400, detail="Password should be at least 8 characters")
+
     if exisiting_username :
         raise HTTPException(status_code=400, detail="Username already Taken !")
 
@@ -54,6 +64,7 @@ async def sign_up(user: signUpRequest, session: SessionDep) -> JSONResponse:
 
 @authRouter.post("/login")
 async def login(user : signInRequest, session : SessionDep) -> JSONResponse:
+    
     existing_username = session.exec(select(User).where(User.username == user.username)).first()
     if not existing_username:
         raise HTTPException(status_code=404, detail="Username not found !")
@@ -68,7 +79,7 @@ async def login(user : signInRequest, session : SessionDep) -> JSONResponse:
     
 
     
-@authRouter.get("/users/")
+@authRouter.get("/users")
 def read_users(
     session: SessionDep,
     offset: int = 0,
