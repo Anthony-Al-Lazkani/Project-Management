@@ -76,6 +76,8 @@ export const Register: React.FC = () => {
         confirm_password,
       });
 
+      const token: string = response.data.token;
+
       toast.success(response.data.message, {
         position: "top-right",
         autoClose: 5000,
@@ -88,6 +90,7 @@ export const Register: React.FC = () => {
         theme: "dark",
       });
 
+      localStorage.setItem("token", token);
       setUsername("");
       setEmail("");
       setPassword("");

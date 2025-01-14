@@ -8,6 +8,7 @@ from ..models.userModel import User
 from ..database import get_session
 from pydantic import BaseModel, Field, EmailStr, validator
 from passlib.context import CryptContext
+from ..jwt import TokenData, create_access_token
 
 authRouter = APIRouter()
 
@@ -56,23 +57,29 @@ async def sign_up(user: signUpRequest, session: SessionDep) -> JSONResponse:
     session.commit()
     session.refresh(new_user)
 
+    token_data = TokenData(username = user.username)
+    token = create_access_token(token_data)
+
     return JSONResponse(
-        content={"message" : "User created successfully"},
+        content={"message" : "User created successfully", "token" : token},
         status_code=201
     )
 
 
 @authRouter.post("/login")
 async def login(user : signInRequest, session : SessionDep) -> JSONResponse:
-    
+
     existing_username = session.exec(select(User).where(User.username == user.username)).first()
     if not existing_username:
         raise HTTPException(status_code=404, detail="Username not found !")
     
     if not pwd_context.verify(user.password, existing_username.password):
         raise HTTPException(status_code=400, detail="Invalid Password !")
+
+    token_data = TokenData(username = user.username)
+    token = create_access_token(token_data)
     return JSONResponse(
-        content={"message" : "Login successful"},
+        content={"message" : "Login successful", "token" : token},
         status_code = 200
     )
 

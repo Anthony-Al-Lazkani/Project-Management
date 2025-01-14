@@ -1,7 +1,11 @@
 from sqlmodel import create_engine, Session, SQLModel
 
-DATABASE_FILENAME = "database.db"
-DATABASE_URL = f"sqlite:///{DATABASE_FILENAME}"
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+DATABASE_URL = os.getenv("DATABASE_URL")
 
 connect_args = {"check_same_thread": False}
 
