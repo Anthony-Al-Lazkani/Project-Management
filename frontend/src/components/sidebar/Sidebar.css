@@ -1,8 +1,8 @@
 .sidebar-container {
   height: 100%;
   width: 250px;
-  background-color: var(--primary-color);
-  box-shadow: 4px 0 6px rgba(0, 0, 0, 0.2);
+  background-color: var(--secondary-color);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1), 0 2px 6px rgba(0, 0, 0, 0.05);
 }
 
 .sidebar-header-title {
@@ -38,10 +38,6 @@
 }
 
 .sidebar-link:hover {
-  background-color: var(--secondary-color);
-}
-
-.sidebar-link.active {
   background-color: var(--tertiary-color);
 }
 

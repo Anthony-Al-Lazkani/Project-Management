@@ -6,6 +6,8 @@
 
 .App-Content {
   flex-grow: 1;
+  background-color: var(--primary-color);
+  color: #fff;
 }
 
 /* Login and Register Global CSS */

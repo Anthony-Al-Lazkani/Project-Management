@@ -7,6 +7,7 @@ import { FaEye, FaEyeSlash } from "react-icons/fa6";
 import { IoMdMail } from "react-icons/io";
 import { ToastContainer, toast } from "react-toastify";
 import { ClipLoader } from "react-spinners";
+import { useAuth } from "../../context/AuthContext";
 
 export const Login: React.FC = () => {
   const navigate = useNavigate();
@@ -16,6 +17,8 @@ export const Login: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
 
   const [showPassword, setShowPassword] = useState<boolean>(false);
+
+  const { login } = useAuth();
 
   const handleShowPassword = () => {
     setShowPassword(!showPassword);
@@ -51,18 +54,7 @@ export const Login: React.FC = () => {
 
       const token: string = response.data.token;
 
-      toast.success(response.data.message, {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        pauseOnFocusLoss: false,
-        draggable: true,
-        progress: undefined,
-        theme: "dark",
-      });
-      localStorage.setItem("token", token);
+      login(token);
       setUsername("");
       setPassword("");
       navigate("/");
@@ -115,7 +107,6 @@ export const Login: React.FC = () => {
                 {showPassword ? <FaEye /> : <FaEyeSlash />}
               </span>
             </div>
-
             {/* Login Button */}
             <button type="submit" disabled={loading}>
               {loading ? (

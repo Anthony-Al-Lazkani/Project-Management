@@ -7,6 +7,7 @@ import { FaEye, FaEyeSlash } from "react-icons/fa6";
 import { IoMdMail } from "react-icons/io";
 import { ToastContainer, toast } from "react-toastify";
 import { ClipLoader } from "react-spinners";
+import { useAuth } from "../../context/AuthContext";
 
 export const Register: React.FC = () => {
   const navigate = useNavigate();
@@ -16,6 +17,8 @@ export const Register: React.FC = () => {
   const [confirm_password, setConfirmPassword] = useState<string>("");
 
   const [loading, setLoading] = useState<boolean>(false);
+
+  const { login } = useAuth();
 
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [showConfirmPassword, setShowConfirmPassword] =
@@ -90,7 +93,7 @@ export const Register: React.FC = () => {
         theme: "dark",
       });
 
-      localStorage.setItem("token", token);
+      login(token);
       setUsername("");
       setEmail("");
       setPassword("");
