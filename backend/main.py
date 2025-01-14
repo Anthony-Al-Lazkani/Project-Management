@@ -11,7 +11,7 @@ app = FastAPI()
 def on_startup():
     create_db_and_tables()
 
-app.include_router(authRouter)
+app.include_router(authRouter, prefix="/auth")
 
 origins = ["http://localhost:5173/"]
 
