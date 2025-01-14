@@ -49,6 +49,8 @@ export const Login: React.FC = () => {
         password,
       });
 
+      const token: string = response.data.token;
+
       toast.success(response.data.message, {
         position: "top-right",
         autoClose: 5000,
@@ -60,7 +62,7 @@ export const Login: React.FC = () => {
         progress: undefined,
         theme: "dark",
       });
-
+      localStorage.setItem("token", token);
       setUsername("");
       setPassword("");
       navigate("/");
