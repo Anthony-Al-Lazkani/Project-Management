@@ -3,6 +3,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from .database import create_db_and_tables
 from .routes.authRoutes import authRouter
+from .routes.projectsRoutes import projectsRouter
 
 
 app = FastAPI()
@@ -12,6 +13,7 @@ def on_startup():
     create_db_and_tables()
 
 app.include_router(authRouter, prefix="/auth")
+app.include_router(projectsRouter)
 
 origins = ["http://localhost:5173"]
 
