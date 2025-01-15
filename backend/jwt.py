@@ -13,6 +13,7 @@ ALGORITHM = os.getenv("ALGORITHM")
 
 
 class TokenData(BaseModel):
+    id : int
     username: str
 
 def create_access_token(data: TokenData):
@@ -24,7 +25,7 @@ def create_access_token(data: TokenData):
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
-def verify_token(token: str):
+def decode_token(token: str):
     try:
         decoded_token = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         return decoded_token
@@ -32,3 +33,4 @@ def verify_token(token: str):
         raise HTTPException(status_code=401, detail="Token has expired")
     except jwt.JWTError:
         raise HTTPException(status_code=401, detail="Could not validate credentials")
+

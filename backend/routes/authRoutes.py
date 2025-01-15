@@ -1,12 +1,11 @@
-# routes/heroRoutes.py
 from fastapi import APIRouter, HTTPException, Depends, Query
 from fastapi.responses import JSONResponse
-from sqlmodel import Field, Session, SQLModel, create_engine, select
+from sqlmodel import Session, SQLModel, select
 from sqlalchemy.orm import Session
 from typing import Annotated
 from ..models.userModel import User
 from ..database import get_session
-from pydantic import BaseModel, Field, EmailStr, validator
+from pydantic import BaseModel
 from passlib.context import CryptContext
 from ..jwt import TokenData, create_access_token
 
@@ -57,7 +56,7 @@ async def sign_up(user: signUpRequest, session: SessionDep) -> JSONResponse:
     session.commit()
     session.refresh(new_user)
 
-    token_data = TokenData(username = user.username)
+    token_data = TokenData(id = new_user.id, username = user.username)
     token = create_access_token(token_data)
 
     return JSONResponse(
@@ -76,7 +75,7 @@ async def login(user : signInRequest, session : SessionDep) -> JSONResponse:
     if not pwd_context.verify(user.password, existing_username.password):
         raise HTTPException(status_code=400, detail="Invalid Password !")
 
-    token_data = TokenData(username = user.username)
+    token_data = TokenData(id = existing_username.id, username = user.username)
     token = create_access_token(token_data)
     return JSONResponse(
         content={"message" : "Login successful", "token" : token},
