@@ -1,0 +1,165 @@
+.projects-title {
+  text-align: center;
+}
+
+.add-project-form {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: 300px;
+  width: 300px;
+  padding: 25px;
+  border: 1px solid var(--secondary-color);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1), 0 2px 6px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto;
+  gap: 10px;
+  backdrop-filter: blur(100px);
+}
+
+.add-project-form h3 {
+  text-align: center;
+}
+
+.add-project-form input {
+  height: 25px;
+  padding: 5px;
+  background-color: transparent;
+  outline: none;
+  border: 1px solid var(--secondary-color);
+}
+
+.add-project-form textarea {
+  background-color: transparent;
+  border: 1px solid var(--secondary-color);
+  outline: none;
+  resize: none;
+  padding: 5px;
+  height: 40px;
+}
+
+.add-project-close-icon {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  font-size: 20px;
+  transition: 0.3s ease;
+}
+
+.add-project-form button {
+  height: 30px;
+  background-color: transparent;
+  border: 1px solid var(--secondary-color);
+  outline: none;
+  transition: 0.3s ease;
+}
+
+.add-project-form button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.add-project-close-icon:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.add-project-button button {
+  padding: 10px 20px;
+  background-color: transparent;
+  border: 1px solid var(--secondary-color);
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.add-project-button button:hover {
+  background-color: var(--tertiary-color);
+}
+
+/* Projects Table Styling */
+
+.projects-page-container {
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex-direction: column;
+}
+
+.projects-container {
+  width: 80%;
+  height: 70%;
+  /* border: 1px solid var(--secondary-color); */
+  margin-top: 20px;
+}
+
+.projects-table {
+  width: 100%;
+  margin-top: 20px;
+  border-collapse: collapse;
+}
+
+.projects-table th,
+.projects-table td {
+  padding: 10px;
+  text-align: center;
+  border: 1px solid var(--secondary-color);
+}
+
+.projects-table th {
+  background-color: var(--secondary-color);
+  font-weight: bold;
+}
+
+.projects-table td {
+  padding: 8px;
+}
+
+.projects-table tr {
+  transition: 0.3s ease;
+}
+
+.projects-table tr:hover {
+  background-color: rgba(95, 176, 127, 1);
+}
+
+.projects-table td {
+  color: #fff;
+  font-size: 14px;
+}
+
+@media (max-width: 768px) {
+  .projects-table th,
+  .projects-table td {
+    padding: 8px;
+    font-size: 12px;
+  }
+
+  .projects-table {
+    font-size: 12px;
+  }
+}
+
+.icons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.delete-icon {
+  transition: 0.3s ease;
+}
+
+.delete-icon:hover {
+  color: var(--secondary-color);
+  transform: translateY(-1.5px);
+}
+
+.edit-icon {
+  transition: 0.3s ease;
+}
+
+.edit-icon:hover {
+  transform: translateY(-1.5px);
+}

@@ -35,7 +35,7 @@ export const Sidebar: React.FC = () => {
                 </li>
 
                 <li>
-                  <Link to="/" className="sidebar-link">
+                  <Link to="/projects" className="sidebar-link">
                     <FaProjectDiagram className="sidebar-icon" /> Projects
                   </Link>
                 </li>

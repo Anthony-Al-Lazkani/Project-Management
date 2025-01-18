@@ -15,11 +15,11 @@ def on_startup():
 app.include_router(authRouter, prefix="/auth")
 app.include_router(projectsRouter)
 
-origins = ["http://localhost:5173"]
+origins = ["http://localhost:5173/"]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=["http://localhost:5173"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
