@@ -7,7 +7,8 @@ from ..database import get_session
 from pydantic import BaseModel
 from datetime import date
 from ..jwt import decode_token
-from ..models.projectModel import Project
+from ..models.projectModel import Project, ProjectStatus
+from fastapi.encoders import jsonable_encoder
 
 
 projectsRouter = APIRouter()
@@ -20,24 +21,9 @@ class createProjectRequest(BaseModel):
     start_date : date
     end_date : date
 
-class getAllProjectsResponse(BaseModel):
-    id: int
-    project_name: str
-    description: str
-    status: str
-    owner_id: int
-    start_date: date
-    end_date: date
-    updated_at: date
-    created_at: date
-
-    class Config:
-        orm_mode = True
-
-
 # CREATE project
 @projectsRouter.post("/projects")
-def create_project(project : createProjectRequest,request : Request,  session : SessionDep):
+async def create_project(project : createProjectRequest,request : Request,  session : SessionDep):
 
     authorization_header = request.headers.get("Authorization")
     if not authorization_header:
@@ -75,15 +61,19 @@ def create_project(project : createProjectRequest,request : Request,  session : 
     session.commit()
     session.refresh(new_project)
 
+
+    serialized_project = jsonable_encoder(new_project)
+
     return JSONResponse(
-        content={"message" : "Project created successfully"},
+        content={"message" : "Project created successfully", "project" : serialized_project},
         status_code = 201
     )
+
     
     
 # UPDATE project
 @projectsRouter.put("/projects/{project_id}")
-def update_project(
+async def update_project(
     project_id: int,
     project: createProjectRequest,
     request: Request,
@@ -136,7 +126,7 @@ def update_project(
 
 # GET all projects
 @projectsRouter.get("/projects", response_model=list[Project])
-def get_all_projects(request: Request, session: SessionDep):
+async def get_all_projects(request: Request, session: SessionDep):
 
     authorization_header = request.headers.get("Authorization")
     if not authorization_header:
@@ -159,7 +149,7 @@ def get_all_projects(request: Request, session: SessionDep):
 
 # DELETE project
 @projectsRouter.delete("/projects/{project_id}")
-def delete_project(project_id: int, request: Request, session: SessionDep):
+async def delete_project(project_id: int, request: Request, session: SessionDep):
     authorization_header = request.headers.get("Authorization")
     if not authorization_header:
         raise HTTPException(status_code=400, detail="Authorization header is missing")
@@ -190,7 +180,7 @@ def delete_project(project_id: int, request: Request, session: SessionDep):
 
 # GET single project
 @projectsRouter.get("/projects/{project_id}", response_model=Project)
-def get_single_project(project_id: int, request: Request, session: SessionDep):
+async def get_single_project(project_id: int, request: Request, session: SessionDep):
     authorization_header = request.headers.get("Authorization")
     if not authorization_header:
         raise HTTPException(status_code=400, detail="Authorization header is missing")
