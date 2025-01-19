@@ -119,8 +119,10 @@ async def update_project(
     session.commit()
     session.refresh(project_to_update)
 
+    serialized_project = jsonable_encoder(project_to_update)
+
     return JSONResponse(
-        content={"message": "Project updated successfully"},
+        content={"message": "Project updated successfully", "project" : serialized_project},
         status_code=200
     )
 
