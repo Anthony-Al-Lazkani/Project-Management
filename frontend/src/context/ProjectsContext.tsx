@@ -30,7 +30,8 @@ interface State {
 type Action =
   | { type: "SET_PROJECTS"; payload: Project[] }
   | { type: "CREATE_PROJECT"; payload: Project }
-  | { type: "DELETE_PROJECT"; payload: number };
+  | { type: "DELETE_PROJECT"; payload: number }
+  | { type: "EDIT_PROJECT"; payload: Project };
 
 const ProjectsReducer = (state: State, action: Action) => {
   switch (action.type) {
@@ -50,6 +51,14 @@ const ProjectsReducer = (state: State, action: Action) => {
       return {
         ...state,
         projects : state.projects.filter((project) => project.id !== action.payload),
+      };
+
+      case "EDIT_PROJECT":
+      return {
+        ...state, 
+        projects: state.projects.map((project) =>
+          project.id === action.payload.id ? action.payload : project
+        ),
       };
 
     default:

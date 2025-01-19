@@ -33,9 +33,10 @@ export const Projects: React.FC = () => {
     start_date: "",
     end_date: "",
   });
-  const [isFormVisible, setIsShowVisible] = useState<boolean>(false);
+  const [isFormVisible, setIsFormVisible] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
-  // const [projects, setProjects] = useState<Project[]>([]);
+  const [isEditing, setIsEditing] = useState<boolean>(false);
+  const [project_id, setProjectId] = useState<number>(0);
   const { projects, dispatch } = useProjects();
 
   useEffect(() => {
@@ -61,14 +62,22 @@ export const Projects: React.FC = () => {
   }, []);
 
   function handleForm() {
-    setIsShowVisible(!isFormVisible);
+    if (isEditing == true && isFormVisible == true) {
+      setIsEditing(false);
+      setProjectRequest({
+        project_name: "",
+        description: "",
+        start_date: "",
+        end_date: "",
+      });
+    }
+    setIsFormVisible(!isFormVisible);
   }
 
   const { getToken } = useAuth();
 
-  async function handleCreateProject(e: React.FormEvent) {
+  async function handleCreateOrEditProject(e: React.FormEvent) {
     e.preventDefault();
-
     setLoading(true);
 
     if (
@@ -95,6 +104,46 @@ export const Projects: React.FC = () => {
     try {
       const token = getToken();
 
+      if (isEditing) {
+        const response = await axios.put(
+          `http://127.0.0.1:8000/projects/${project_id}`,
+          {
+            project_name: projectRequest.project_name,
+            description: projectRequest.description,
+            start_date: projectRequest.start_date,
+            end_date: projectRequest.end_date,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (response) {
+          dispatch({ type: "EDIT_PROJECT", payload: response.data.project });
+          setProjectRequest({
+            project_name: "",
+            description: "",
+            start_date: "",
+            end_date: "",
+          });
+          handleForm();
+          toast.success(response.data.message, {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            pauseOnFocusLoss: false,
+            draggable: true,
+            progress: undefined,
+            theme: "dark",
+          });
+          setIsEditing(false);
+          return;
+        }
+      }
       const response = await axios.post(
         "http://127.0.0.1:8000/projects",
         {
@@ -109,7 +158,6 @@ export const Projects: React.FC = () => {
           },
         }
       );
-      console.log(response.data);
       toast.success(response.data.message, {
         position: "top-right",
         autoClose: 5000,
@@ -148,6 +196,20 @@ export const Projects: React.FC = () => {
     }
   }
 
+  // Edit the Project
+  const handleEditProject = (project: Project) => {
+    setIsEditing(true);
+    setProjectId(project.id);
+    setProjectRequest({
+      project_name: project.name,
+      description: project.description,
+      start_date: project.start_date,
+      end_date: project.end_date,
+    });
+
+    setIsFormVisible(true);
+  };
+
   const handleDeleteProject = async (project_id: number) => {
     const token = getToken();
     try {
@@ -183,8 +245,8 @@ export const Projects: React.FC = () => {
     <>
       <h1 className="projects-title">Projects</h1>
       {isFormVisible && (
-        <form onSubmit={handleCreateProject} className="add-project-form">
-          <h3>Add Project</h3>
+        <form onSubmit={handleCreateOrEditProject} className="add-project-form">
+          <h3>{isEditing ? "Edit Project" : "Create Project"}</h3>
           <IoMdClose className="add-project-close-icon" onClick={handleForm} />
           <input
             type="text"
@@ -232,6 +294,8 @@ export const Projects: React.FC = () => {
           <button type="submit" disabled={loading}>
             {loading ? (
               <ClipLoader color="#3498db" loading={loading} size={20} />
+            ) : isEditing ? (
+              "Edit Project"
             ) : (
               "Create Project"
             )}
@@ -272,7 +336,10 @@ export const Projects: React.FC = () => {
                         <td>{project.end_date}</td>
                         <td>
                           <div className="icons">
-                            <div className="edit-icon">
+                            <div
+                              className="edit-icon"
+                              onClick={() => handleEditProject(project)}
+                            >
                               <MdEdit />
                             </div>
                             <div
